@@ -8,6 +8,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@iconify-json/logos": "1",
     "@mermaid-js/mermaid-cli": "^11.4.2",
     "puppeteer": "^24.4.0"
   },

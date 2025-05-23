@@ -1,0 +1,34 @@
+architecture-beta
+  %% Client Layer
+  group client(internet)[Client]
+  service mobileApp(internet)[Mobile App] in client
+
+  %% Network Layer
+  group network(cloud)[Network]
+  service nlb(server)[Load Balancer] in network
+  service apiGateway(server)[API Gateway] in network
+  service webSocket(cloud)[WebSocket Service] in network
+
+  %% Compute Layer
+  group compute(server)[Compute]
+  service cognito(cloud)[Amazon Cognito] in compute
+  service lambdaFunc(cloud)[AWS Lambda] in compute
+  service stepFunctions(server)[AWS Step Functions] in compute
+
+  %% Storage Layer
+  group storage(disk)[Storage]
+  service dynamoDB(database)[DynamoDB] in storage
+  service s3(database)[S3] in storage
+
+  %% Core Flows
+  mobileApp:R     --> L:nlb
+  mobileApp:R     --> L:webSocket
+  nlb:R           --> L:apiGateway
+  apiGateway:B    --> T:cognito
+  apiGateway:B    --> T:lambdaFunc
+  webSocket:B     --> T:lambdaFunc
+  lambdaFunc:R    --> L:dynamoDB
+  lambdaFunc:B    --> T:s3
+  lambdaFunc:R    --> L:stepFunctions
+  stepFunctions:B --> T:dynamoDB
+
